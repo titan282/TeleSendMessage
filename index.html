@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Magic</h1>
+        <textarea id="message" placeholder="Nhập tin nhắn của bạn..."></textarea>
+        <label for="userSelect">Chọn người nhận:</label>
+        <select id="userSelect">
+        
+            <!-- Danh sách sẽ được tạo động ở đây -->
+        </select>
+        <button id="sendButton">Gửi Tin Nhắn</button>
+        <div id="response"></div>
+
+        <!-- Thêm ô drag-and-drop -->
+        <div id="dropZone">Kéo thả hoặc nhấp để chọn tệp/hình ảnh</div>
+        <input type="file" id="fileInput" style="display: none;" />
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
