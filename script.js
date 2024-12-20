@@ -1,5 +1,5 @@
 const chatIds = [
-    { id: '1270488169', name: 'Tannc1' },
+    { id: '1270488169', name: 'Tannc1'},
     { id: '1442486099', name: 'Giang Huế'}
 ];
 
@@ -8,12 +8,12 @@ const userSelect = document.getElementById('userSelect');
 chatIds.forEach(user => {
     const option = document.createElement('option');
     option.value = user.id;
+    option.textContent = user.name;
     userSelect.appendChild(option);
 });
 
 const dropZone = document.getElementById('dropZone');
 const messageInput = document.getElementById('message');
-
 
 document.getElementById('sendButton').addEventListener('click', function() {
     const message = document.getElementById('message').value;
@@ -29,13 +29,25 @@ document.getElementById('sendButton').addEventListener('click', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.ok) {
-                        document.getElementById('response').innerText = 'Tin nhắn đã được gửi!';
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: 'Tin nhắn đã được gửi!',
+                        });
                     } else {
-                        document.getElementById('response').innerText = 'Có lỗi xảy ra!';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Có lỗi xảy ra!',
+                            text: 'Vui lòng thử lại sau.',
+                        });
                     }
                 })
                 .catch(error => {
-                    document.getElementById('response').innerText = 'Lỗi kết nối!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi kết nối!',
+                        text: 'Vui lòng kiểm tra kết nối của bạn.',
+                    });
                     console.error('Error:', error);
                 });
         }
@@ -44,23 +56,11 @@ document.getElementById('sendButton').addEventListener('click', function() {
         document.getElementById('message').value = '';
         fileInput.value = '';
     } else {
-        alert('Vui lòng nhập tin nhắn, chọn tệp hoặc dán hình ảnh!');
-    }
-});
-
-// Xử lý sự kiện paste để lấy hình ảnh từ clipboard
-document.addEventListener('paste', function(event) {
-    const items = event.clipboardData.items;
-    for (let i = 0; i < items.length; i++) {
-        if (items[i].type.indexOf('image') !== -1) {
-            const file = items[i].getAsFile();
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewImage.src = e.target.result;
-                previewContainer.style.display = 'block'; // Hiển thị preview
-            };
-            reader.readAsDataURL(file);
-        }
+        Swal.fire({
+            icon: 'warning',
+            title: 'Cảnh báo!',
+            text: 'Vui lòng nhập tin nhắn, chọn tệp hoặc dán hình ảnh!',
+        });
     }
 });
 
@@ -110,10 +110,9 @@ function handleFile(file) {
     }
 }
 
-
 // Hàm hiển thị preview trong DropZone
 function showPreview(imageSrc) {
-    dropZone.innerHTML = `<img src="${imageSrc}" alt="Preview" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px;" />`;
+    messageInput.innerHTML = `<img src="${imageSrc}" alt="Preview" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px;" />`;
 }
 
 // Xử lý sự kiện paste vào ô nhập tin nhắn
@@ -132,7 +131,7 @@ messageInput.addEventListener('paste', (event) => {
             reader.readAsDataURL(file);
 
             // Gửi ảnh qua API
-            sendPhoto(file);
+            handleFile(file);
         }
     } else {
         // Kiểm tra nếu nội dung được paste là URL hình ảnh
@@ -146,7 +145,7 @@ messageInput.addEventListener('paste', (event) => {
                 .then(res => res.blob())
                 .then(blob => {
                     const file = new File([blob], 'image.jpg', { type: blob.type });
-                    sendPhoto(file);
+                    handleFile(file);
                 })
                 .catch(error => console.error('Lỗi khi tải ảnh từ URL:', error));
         }
